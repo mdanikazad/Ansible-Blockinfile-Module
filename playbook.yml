@@ -1,0 +1,24 @@
+- hosts: all
+  become: yes
+  remote_user: root
+  tasks:
+  - name: install apache stack
+    yum: name=httpd state=present
+  - name: Start and Enable Airflow
+    systemd:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Touch a file, using symbolic modes to set the permissions (equivalent to 0644)
+    blockinfile:
+        path: /var/www/html/index.html
+        content: |
+              Welcome to XfusionCorp!
+
+              This is Nautilus sample file, created using Ansible!
+
+              Please do not modify this file manually!
+        group: apache
+        owner: apache
+        mode: '0744'
+        create: yes
